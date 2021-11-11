@@ -3,32 +3,8 @@ import { Platform, View, Text, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
-const locations = [
-  {
-    coordLat: 50.079024,
-    coordLong: 8.229947,
-    locationName: "Verona-Pizzeria offline",
-    desc: " Studentenangebot: Pizza für 6,90€ incl. 0,33l Softdrink",
-  },
-  {
-    coordLat: 50.071789,
-    coordLong: 8.233186,
-    locationName: "Trattoria di Balbi offline",
-    desc: " Schülerangebot: jede Pizza für 6€",
-  },
-];
-
-export default function Map() {
-  const [apiData, setApiData] = useState(locations);
-  useEffect(() => {
-    fetch("http://localhost:3000/api/mapData")
-      .then((res) => res.json)
-      //@ts-ignore
-      .then((data) => setApiData(data))
-      .catch((error) => {
-        alert("API nicht verfügbar");
-      });
-  }, []);
+export default function Map({ locations }) {
+  const apiData = locations;
 
   const [mapRegion, setMapRegion] = useState({
     latitude: 50.110924,

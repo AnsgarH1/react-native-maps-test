@@ -7,7 +7,7 @@ export default function Home({ navigation }) {
     <View>
       <Text>Home Screen</Text>
       <Button title="go to Map" onPress={() => navigation.navigate("Map")} />
-      <Text>This site does absolutely nothing and implementing React Routing was a waste of time.</Text>
+      <Button title="create some Data" onPress={()=> navigation.navigate("AddData")} />
     </View>
   );
 }
