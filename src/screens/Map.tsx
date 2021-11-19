@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Platform, View, Text, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+import { ApiDataContext } from "../../App";
 
-export default function Map({ locations }) {
-  const apiData = locations;
+export default function Map() {
+  const apiData = useContext(ApiDataContext);
 
   const [mapRegion, setMapRegion] = useState({
     latitude: 50.110924,
@@ -62,14 +63,10 @@ export default function Map({ locations }) {
             }}
           />
         )}
-        {apiData.map((location) => (
+        {apiData?.results?.map((adr) => (
           <Marker
-            title={location.locationName}
-            description={location.desc}
-            coordinate={{
-              latitude: location.coordLat,
-              longitude: location.coordLong,
-            }}
+            pinColor="red"
+            coordinate={{ latitude: adr.valLat, longitude: adr.valLong }}
           />
         ))}
       </MapView>

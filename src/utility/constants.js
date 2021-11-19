@@ -1,3 +1,3 @@
-const API_URL = "https://127.0.0.1/API/mapData";
+const API_URL = "https://whispering-cove-32456.herokuapp.com/adresse/?format=json";
 
 export { API_URL };

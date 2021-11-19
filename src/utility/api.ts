@@ -12,12 +12,27 @@ const sendData = async (title: string, description: string) => {
 };
 
 const getData = async () => {
+  console.log("loading data");
   //   const request: RequestInit = {
   //     method: "GET",
   //     headers: { "Content-Type": "application/json" },
   //   };
 
-  return fetch(API_URL);
+  return fetch(API_URL)
+    .then((response) => {
+      // console.log("response:", response);
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.log("error", error);
+      alert(
+        "Fehler beim Abrufen der Daten! Es werden offline Mock-Daten verwendet. \n" +
+          error
+      );
+    });
 };
 
 export { sendData, getData };

@@ -3,15 +3,16 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { FetchResult, View, Text } from "react-native";
 import AddData from "./src/screens/AddData";
 import Home from "./src/screens/Home";
 import Map from "./src/screens/Map";
 import { getData } from "./src/utility/api";
-import { API_URL } from "./src/utility/constants";
-import { offer } from "./src/utility/types";
+import { apiResult } from "./src/utility/types";
 
 const Stack = createNativeStackNavigator();
+export const ApiDataContext = React.createContext<Partial<apiResult>>({});
 
 // Some Mock-Data
 const locations = [
@@ -30,31 +31,23 @@ const locations = [
 ];
 
 export default function App() {
-  const [apiData, setApiData] = useState<Array<offer>>(locations);
+  const [apiData, setApiData] = useState({});
   useEffect(() => {
-    getData()
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => setApiData(data))
-      .catch((error) => {
-        alert(
-          "Fehler beim Abrufen der Daten! Es werden offline Mock-Daten verwendet. \n" +
-            error
-        );
-      });
+    const init = async () => {
+      getData().then((data) => setApiData(data));
+      // setApiData(data);
+    };
+    init();
   }, []);
-
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Map" component={Map} />
-        <Stack.Screen name="AddData" component={AddData} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ApiDataContext.Provider value={apiData}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Map" component={Map} />
+          <Stack.Screen name="AddData" component={AddData} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ApiDataContext.Provider>
   );
 }
