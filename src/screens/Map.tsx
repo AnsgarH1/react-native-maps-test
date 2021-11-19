@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { Platform, View, Text, StyleSheet, Dimensions } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Camera, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { ApiDataContext } from "../../App";
+import { Button, Icon } from "react-native-elements";
 
 export default function Map() {
   const apiData = useContext(ApiDataContext);
+
+  const mapRef = useRef<MapView>(null);
 
   const [mapRegion, setMapRegion] = useState({
     latitude: 50.110924,
@@ -49,6 +52,7 @@ export default function Map() {
   return (
     <View style={styles.container}>
       <MapView
+        ref={mapRef}
         initialRegion={mapRegion}
         region={mapRegion}
         onRegionChange={setMapRegion}
@@ -70,6 +74,69 @@ export default function Map() {
           />
         ))}
       </MapView>
+      {location && (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 100,
+            right:10,
+            height: 50,
+            width: 50,
+            borderRadius: 12,
+            display: "flex",
+            justifyContent: "center",
+            backgroundColor: "white",
+          }}
+        >
+          <Icon
+            name="locate"
+            type="ionicon"
+            color="black"
+            size={46}
+            onPress={() => {
+              mapRef.current?.animateCamera(
+                {
+                  center: {
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                  },
+                },
+                { duration: 500 }
+              );
+            }}
+          />
+        </View>
+      )}
+      {apiData && (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+
+            width: Dimensions.get("window").width,
+          }}
+        >
+          <Button
+            title="Go to Adress"
+            style={{
+              width: "80%",
+              left: "10%",
+              marginBottom: 24,
+            }}
+            onPress={() => {
+              mapRef.current?.animateCamera(
+                {
+                  center: {
+                    latitude: apiData.results[0].valLat,
+                    longitude: apiData.results[0].valLong,
+                  },
+                },
+                { duration: 500 }
+              );
+            }}
+          />
+        </View>
+      )}
     </View>
   );
 }
